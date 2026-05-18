@@ -1,0 +1,14 @@
+{
+  "name": "qimen-mcp-server",
+  "version": "1.0.0",
+  "description": "Qimen Dunjia HTTP API for myfengshui.today",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "lunar-typescript": "^3.7.5"
+  }
+}
