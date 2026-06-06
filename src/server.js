@@ -5,6 +5,42 @@ const express = require('express');
 const cors = require('cors');
 const { generateChartByDatetime, chartToObject } = require('qimen-dunjia');
 
+// Patch qimen-dunjia: add missing Simplified→Traditional solar term mappings
+// The library only maps 3 terms but lunar-javascript returns Simplified for many more
+try {
+  const calcPath = require.resolve('qimen-dunjia/calculations.js');
+  let calcSrc = require('fs').readFileSync(calcPath, 'utf8');
+  if (!calcSrc.includes("'芒种': '芒種'")) {
+    calcSrc = calcSrc.replace(
+      "'处暑': '處暑'",
+      `'处暑': '處暑',
+    '芒种': '芒種',
+    '小满': '小滿',
+    '清明': '清明',
+    '大暑': '大暑',
+    '小暑': '小暑',
+    '白露': '白露',
+    '霜降': '霜降',
+    '雨水': '雨水',
+    '大雪': '大雪',
+    '小雪': '小雪',
+    '立春': '立春',
+    '立夏': '立夏',
+    '立秋': '立秋',
+    '立冬': '立冬',
+    '寒露': '寒露',
+    '冬至': '冬至',
+    '夏至': '夏至',
+    '春分': '春分',
+    '秋分': '秋分'`
+    );
+    require('fs').writeFileSync(calcPath, calcSrc, 'utf8');
+    console.log('[patch] qimen-dunjia solar term mappings patched');
+  }
+} catch(e) {
+  console.warn('[patch] could not patch qimen-dunjia:', e.message);
+}
+
 const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
