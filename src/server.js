@@ -44,11 +44,25 @@ function formatDatetime(date) {
 }
 
 function buildChart(date, chartType) {
-  const dt = chartType === 'day'
+  let dt = chartType === 'day'
     ? new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0)
     : date;
 
-  const obj = chartToObject(generateChartByDatetime(formatDatetime(dt)));
+  let obj;
+  try {
+    obj = chartToObject(generateChartByDatetime(formatDatetime(dt)));
+  } catch(e) {
+    // Solar term boundary issue — retry with noon +1 hour to skip boundary
+    console.warn('[qimen] solar term boundary, retrying with offset:', e.message);
+    const dt2 = new Date(dt.getTime() + 3600000); // +1 hour
+    try {
+      obj = chartToObject(generateChartByDatetime(formatDatetime(dt2)));
+    } catch(e2) {
+      // Try -1 hour
+      const dt3 = new Date(dt.getTime() - 3600000);
+      obj = chartToObject(generateChartByDatetime(formatDatetime(dt3)));
+    }
+  }
 
   const diPan   = obj['地盤'] || [];   // array[9], index 0-8
   const tianPan = obj['天盤'] || [];
