@@ -123,35 +123,35 @@ app.get('/debug', (req, res) => {
     const now = new Date();
     const obj = chartToObject(generateChartByDatetime(formatDatetime(now)));
     res.json(obj);
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch(e) { console.error('[qimen/debug] error:', e.message, e.stack); res.status(500).json({ error: e.message, stack:e.stack?.split('\n')[0] }); }
 });
 
 app.get('/qimen/both', (req, res) => {
   try {
     const now = new Date();
     res.json({ success:true, hour:buildChart(now,'hour'), day:buildChart(now,'day'), timestamp:now.toISOString() });
-  } catch(e) { res.status(500).json({ success:false, error:e.message }); }
+  } catch(e) { console.error('[qimen] error:', e.message, e.stack); res.status(500).json({ success:false, error:e.message, stack:e.stack?.split('\n')[0] }); }
 });
 
 app.post('/qimen/both', (req, res) => {
   try {
     const now = req.body.solarDatetime ? new Date(req.body.solarDatetime) : new Date();
     res.json({ success:true, hour:buildChart(now,'hour'), day:buildChart(now,'day'), timestamp:now.toISOString() });
-  } catch(e) { res.status(500).json({ success:false, error:e.message }); }
+  } catch(e) { console.error('[qimen] error:', e.message, e.stack); res.status(500).json({ success:false, error:e.message, stack:e.stack?.split('\n')[0] }); }
 });
 
 app.post('/qimen/hour', (req, res) => {
   try {
     const date = req.body.solarDatetime ? new Date(req.body.solarDatetime) : new Date();
     res.json({ success:true, data:buildChart(date,'hour') });
-  } catch(e) { res.status(500).json({ success:false, error:e.message }); }
+  } catch(e) { console.error('[qimen] error:', e.message, e.stack); res.status(500).json({ success:false, error:e.message, stack:e.stack?.split('\n')[0] }); }
 });
 
 app.post('/qimen/day', (req, res) => {
   try {
     const date = req.body.solarDatetime ? new Date(req.body.solarDatetime) : new Date();
     res.json({ success:true, data:buildChart(date,'day') });
-  } catch(e) { res.status(500).json({ success:false, error:e.message }); }
+  } catch(e) { console.error('[qimen] error:', e.message, e.stack); res.status(500).json({ success:false, error:e.message, stack:e.stack?.split('\n')[0] }); }
 });
 
 const PORT = process.env.PORT || 4000;
